@@ -1,0 +1,2 @@
+PREFIX = "Hello"
+NAME = "world"
