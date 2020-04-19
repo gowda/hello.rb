@@ -3,6 +3,7 @@ AllCops:
   Exclude:
     - '.git/**/*'
     - 'vendor/**/*'
+    - 'bin/**/*'
 Layout/SpaceAroundMethodCallOperator:
   Enabled: false
 Lint/RaiseException:
