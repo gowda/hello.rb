@@ -18,4 +18,11 @@ rescue LoadError => e
   abort "Could not load rspec tasks: #{e.inspect}"
 end
 
-task default: :spec
+begin
+  require 'rubocop/rake_task'
+  RuboCop::RakeTask.new(:cop)
+rescue LoadError => e
+  abort "Coult not load rubocop tasks: #{e.inspect}"
+end
+
+task default: %i[cop spec]
