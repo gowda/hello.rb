@@ -3,6 +3,24 @@
 require 'rubygems'
 require 'bundler/setup'
 
+desc 'environment setup'
+task :environment do
+  ENV['RACK_ENV'] = ENV.fetch('RACK_ENV') { 'development' }
+end
+
+desc 'start server'
+task server: :environment do
+  require 'rack'
+  require_relative 'app'
+
+  Rack::Server.start(
+    app: Rack::ShowExceptions.new(Rack::Lint.new(App.new)),
+    Port: 9292
+  )
+rescue LoadError => e
+  abort "Could not load rack: #{e.inspect}"
+end
+
 begin
   require 'rspec/core/rake_task'
   RSpec::Core::RakeTask.new(:spec) do |task|
