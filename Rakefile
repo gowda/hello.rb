@@ -15,7 +15,7 @@ task server: :environment do
 
   Rack::Server.start(
     app: Rack::ShowExceptions.new(Rack::Lint.new(App.new)),
-    Port: ENV.get('PORT') { 9292 }
+    Port: ENV.fetch('PORT') { 9292 }
   )
 rescue LoadError => e
   abort "Could not load rack: #{e.inspect}"
