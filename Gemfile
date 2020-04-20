@@ -2,6 +2,7 @@
 
 source 'https://rubygems.org'
 
+gem 'puma', '~> 4.3.0'
 gem 'rack', '~> 2.2.0'
 
 group :development, :test do
