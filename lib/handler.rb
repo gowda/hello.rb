@@ -1,23 +1,41 @@
 # frozen_string_literal: true
 
 class Handler
-  attr_reader :env
+  attr_reader :env, :message
 
   def initialize(env)
     @env = env
   end
 
-  def erb(filename, local = {})
-    b = binding
-
-    message = local[:message] # rubocop:disable Lint/UselessAssignment
-
-    content = File.read(path_for(filename))
-    ERB.new(content).result(b)
+  def layout_content
+    File.read(path_for(:layout))
+  rescue Errno::ENOENT => _e
+    '<%= yield %>'
   end
 
-  def path_for(filename)
-    File.expand_path("../app/views/#{filename}.erb", __dir__)
+  def layout
+    ERB.new(layout_content)
+  end
+
+  def template_content(name)
+    File.read(path_for(name))
+  end
+
+  def template(name)
+    ERB.new(template_content(name))
+  end
+
+  def erb(filename, locals = {})
+    layout.def_method(self.class, :render_layout)
+
+    @message = locals[:message]
+    template(filename).def_method(self.class, :render_template)
+
+    render_layout { render_template }
+  end
+
+  def request
+    @request ||= Rack::Request.new(env)
   end
 
   def response(status, headers, body = '')
@@ -28,5 +46,9 @@ class Handler
 
   def blank?(str)
     str.nil? || str.strip.empty?
+  end
+
+  def path_for(filename)
+    File.expand_path("../app/views/#{filename}.erb", __dir__)
   end
 end
