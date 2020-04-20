@@ -23,7 +23,8 @@ describe App do
       get '/'
 
       expect(last_response.headers['Content-Type']).to eql('text/html')
-      expect(last_response.body).to eql(content)
+      expect(last_response.body.gsub(/\s+/, ' '))
+        .to eql(content.gsub(/\s+/, ' '))
     end
   end
 
@@ -46,7 +47,8 @@ describe App do
       get '/non-existent'
 
       expect(last_response.headers['Content-Type']).to eql('text/html')
-      expect(last_response.body).to eql(content)
+      expect(last_response.body.gsub(/\s+/, ' '))
+        .to eql(content.gsub(/\s+/, ' '))
     end
   end
 end
