@@ -11,11 +11,11 @@ describe App do
       expect(last_response.status).to eql(200)
     end
 
-    it 'returns "hello world" in body' do
+    it 'returns "hola world" in body' do
       content = <<~CONTENT
         <html>
           <body>
-            <h2>hello world!</h2>
+            <h2>hola world!</h2>
           </body>
         </html>
       CONTENT
