@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 gem 'puma', '~> 4.3.0'
-gem 'rack', '~> 2.2.0'
+gem 'rack', '~> 2.2.3'
 gem 'rake', '~> 13.0.0', require: false
 
 group :development, :test do
