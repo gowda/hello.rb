@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'puma', '~> 4.3.5'
+gem 'puma', '~> 4.3.8'
 gem 'rack', '~> 2.2.3'
 gem 'rake', '~> 13.0.0', require: false
 
