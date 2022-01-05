@@ -2,13 +2,27 @@
 
 require 'router/route'
 
+class TestNoMethodHandler
+  def initialize(_)
+  end
+end
+
+class TestHandler
+  def initialize(_)
+  end
+
+  def path
+    'hello world'
+  end
+end
+
 describe Route do
   describe 'execute' do
     context 'when class is missing' do
       let(:path) { '/path' }
       let(:env) { Rack::MockRequest.env_for(path) }
       let(:route_array) do
-        [path, { klass: 'NonExistentClass', method: :path }]
+        [path, { klass: 'non_existent_class', method: :path }]
       end
 
       subject { described_class.new(route_array) }
@@ -19,15 +33,10 @@ describe Route do
     end
 
     context 'when method is missing' do
-      class Testnomethodhandler
-        def initialize(_)
-        end
-      end
-
       let(:path) { '/path' }
       let(:env) { Rack::MockRequest.env_for(path) }
       let(:route_array) do
-        [path, { klass: 'testnomethodhandler', method: :path }]
+        [path, { klass: 'test_no_method_handler', method: :path }]
       end
 
       subject { described_class.new(route_array) }
@@ -38,18 +47,9 @@ describe Route do
     end
 
     context 'when class & method are present' do
-      class Testhandler
-        def initialize(_)
-        end
-
-        def path
-          'hello world'
-        end
-      end
-
       let(:path) { '/path' }
       let(:env) { Rack::MockRequest.env_for(path) }
-      let(:route_array) { [path, { klass: 'testhandler', method: :path }] }
+      let(:route_array) { [path, { klass: 'test_handler', method: :path }] }
 
       subject { Route.new(route_array) }
 

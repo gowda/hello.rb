@@ -2,10 +2,10 @@
 
 require 'handler'
 
-describe Handler do
-  class TestHandler < Handler
-  end
+class TestHandler < Handler
+end
 
+describe Handler do
   subject { TestHandler.new({}) }
 
   describe 'erb' do

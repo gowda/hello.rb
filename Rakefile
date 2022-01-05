@@ -5,7 +5,7 @@ require 'bundler/setup'
 
 desc 'environment setup'
 task :environment do
-  ENV['RACK_ENV'] = ENV.fetch('RACK_ENV') { 'development' }
+  ENV['RACK_ENV'] = ENV.fetch('RACK_ENV', 'development')
 end
 
 Rake::FileList['tasks/**/*.rake'].each do |file|
