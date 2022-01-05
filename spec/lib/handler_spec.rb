@@ -9,7 +9,87 @@ describe Handler do
   subject { TestHandler.new({}) }
 
   describe 'erb' do
-    context 'when file is missing' do
+    describe 'layout' do
+      context 'when missing' do
+        before do
+          allow(File).to receive(:read)
+            .with(File.expand_path('../../app/views/layout.erb', __dir__))
+            .and_raise(Errno::ENOENT.new('No such file or directory'))
+        end
+
+        context 'without locals' do
+          before do
+            allow(File).to receive(:read)
+              .with(File.expand_path('../../app/views/template.erb', __dir__))
+              .and_return('test message')
+          end
+
+          it 'renders only the template' do
+            expect(subject.erb(:template)).to eql('test message')
+          end
+        end
+
+        context 'with locals' do
+          before do
+            allow(File).to receive(:read)
+              .with(File.expand_path('../../app/views/template.erb', __dir__))
+              .and_return('<%= message %>')
+          end
+
+          it 'renders only the template' do
+            expect(subject.erb(:template, message: 'test message'))
+              .to eql('test message')
+          end
+        end
+      end
+
+      context 'when present' do
+        before do
+          allow(File).to receive(:read)
+            .with(File.expand_path('../../app/views/layout.erb', __dir__))
+            .and_return('wrapped <%= yield %> message')
+        end
+
+        context 'without locals' do
+          before do
+            allow(File).to receive(:read)
+              .with(File.expand_path('../../app/views/template.erb', __dir__))
+              .and_return('test content')
+          end
+
+          it 'renders only the template' do
+            expect(subject.erb(:template)).to eql(
+              'wrapped test content message'
+            )
+          end
+        end
+
+        context 'with locals' do
+          before do
+            allow(File).to receive(:read)
+              .with(File.expand_path('../../app/views/template.erb', __dir__))
+              .and_return('<%= message %>')
+          end
+
+          it 'renders only the template' do
+            expect(subject.erb(:template, message: 'test content'))
+              .to eql('wrapped test content message')
+          end
+        end
+      end
+    end
+
+    context 'when template file is missing' do
+      before do
+        allow(File).to receive(:read)
+          .with(File.expand_path('../../app/views/layout.erb', __dir__))
+          .and_return('<%= yield %>')
+
+        allow(File).to receive(:read)
+          .with(File.expand_path('../../app/views/missing.erb', __dir__))
+          .and_raise(Errno::ENOENT.new('No such file or directory'))
+      end
+
       it 'raises exception on missing file' do
         expect { subject.erb(:missing) }.to raise_error(Errno::ENOENT)
       end
@@ -17,6 +97,10 @@ describe Handler do
 
     describe 'local variable' do
       before do
+        allow(File).to receive(:read)
+          .with(File.expand_path('../../app/views/layout.erb', __dir__))
+          .and_return('<%= yield %>')
+
         allow(File).to receive(:read)
           .with(File.expand_path('../../app/views/with_message.erb', __dir__))
           .and_return('<%= message %>')
